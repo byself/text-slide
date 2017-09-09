@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选项卡切换 + 图片轮播</title>
+
+    <style>
+
+
+        .textSlide{
+            position: relative;
+            margin-left: auto;
+            margin-right: auto;
+            width: 1100px;
+        }
+
+        .tabItems{
+            position: relative;
+            margin: 0 70px;
+            height: 130px;
+            overflow: hidden;
+        }
+
+        .tabSlideBox{
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 130px;
+        }
+
+        .textSlide .card{
+            float: left;
+            margin-right: 120px;
+            width: 240px;
+            text-align: center;
+            color: #000;
+        }
+
+        .textSlide .card h2{
+            margin: 0 0 10px;
+            font-size: 20px;
+        }
+
+        .textSlide .card p{
+            margin: 0;
+            font-size: 16px;
+            line-height: 30px;
+        }
+
+        .textSlide .prev,
+        .textSlide .next{
+            position: absolute;
+            top: 50%;
+            margin-top: -15px;
+            width: 30px;
+            height: 30px;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            background-color: rgba(204,165,73,0.86);
+        }
+
+        .textSlide .prev{
+            left: 12px;
+        }
+
+        .textSlide .next{
+            right: 12px;
+        }
+
+        .textSlide .prev::before,
+        .textSlide .next::before{
+            display:block;
+            height: 100%;
+            font-family: icomoon;
+            color: #fff;
+            line-height: 30px;
+        }
+
+        .textSlide .prev::before{
+            content: '\f104';
+        }
+
+        .textSlide .next::before{
+            content: '\f105';
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="textSlide" id="textSlide">
+        <div class="tabItems">
+            <div class="tabSlideBox">
+                <div class="card">
+                    <h2>澳洲移民分享会</h2>
+                    <p>在去澳洲留学之前一定要先了解学习当地的礼仪和禁忌。所谓禁忌就是那些因传统习惯或社会风俗等原</p>
+                </div>
+                <div class="card">
+                    <h2>澳洲移民分享会</h2>
+                    <p>在去澳洲留学之前一定要先了解学习当地的礼仪和禁忌。所谓禁忌就是那些因传统习惯或社会风俗等原</p>
+                </div>
+                <div class="card">
+                    <h2>澳洲移民分享会</h2>
+                    <p>在去澳洲留学之前一定要先了解学习当地的礼仪和禁忌。所谓禁忌就是那些因传统习惯或社会风俗等原</p>
+                </div>
+                <div class="card">
+                    <h2>澳洲移民分享会</h2>
+                    <p>在去澳洲留学之前一定要先了解学习当地的礼仪和禁忌。所谓禁忌就是那些因传统习惯或社会风俗等原</p>
+                </div>
+            </div>
+        </div>
+        <a class="prev" href="javascript:void(0)"></a>
+        <a class="next" href="javascript:void(0)"></a>
+    </div>
+
+
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+
+        function textSlide(index){
+            var $box = $("#textSlide");
+            var $slideBox = $(".tabSlideBox", $box);
+            var $card = $(".card", $box).eq(0);
+            var $prev = $(".prev", $box);
+            var $next = $(".next", $box);
+
+            var isSlide = false;
+
+            var timer = null;
+
+            var cardNum = $(".card", $slideBox).length;
+            var cardWidth = $card.outerWidth(true);
+            var cardHeight = $card.outerHeight(true);
+
+            $slideBox.width(cardNum * cardWidth);
+
+            // 滚动次数
+            var count = 0;
+
+            // 滚动速度
+            var speed = 1000;
+
+            //动画间隔时间
+            var duration = 2000;
+
+            /*
+             * @param direction  1 :右移  -1：左移
+             **/
+            var move = function(direction, callback){
+                var left = direction * cardWidth;
+
+            };
+
+            var prev = function(){
+                var $lastCard = $(".card", $slideBox).eq(cardNum - 1);
+                $slideBox.prepend($lastCard.clone(true));
+                $lastCard.remove();
+                $slideBox.css("left", -cardWidth);
+
+                $slideBox.animate({"left": 0}, speed, function(){
+                    isSlide = false;
+                    autoplay();
+                });
+            };
+
+            var next = function(){
+                $slideBox.animate({"left": -cardWidth}, speed, function(){
+                    $slideBox.css("left", 0);
+                    var $firstCard = $(".card", $slideBox).eq(0);
+                    $slideBox.append($firstCard.clone(true));
+                    $firstCard.remove();
+                    isSlide = false;
+                    autoplay();
+                });
+            };
+
+            var auto = function(){
+                isSlide = true;
+                $slideBox.animate({"left": -cardWidth}, speed, function(){
+                    $slideBox.css("left", 0);
+                    var $firstCard = $(".card", $slideBox).eq(0);
+                    $slideBox.append($firstCard.clone(true));
+                    $firstCard.remove();
+                    isSlide = false;
+                });
+            };
+
+            var autoplay = function(){
+                timer = setInterval(auto, duration + speed);
+            };
+
+            // auto
+            autoplay();
+
+            // bind
+            $prev.off("click").on("click", function () {
+                if(isSlide) return;
+
+                clearInterval(timer);
+                isSlide = true;
+                next();
+            });
+
+            $next.off("click").on("click", function () {
+                if(isSlide) return;
+
+                clearInterval(timer);
+                isSlide = true;
+                prev();
+            });
+
+        }
+
+        $(function(){
+            textSlide(0);
+        })
+
+    </script>
+
+</body>
+</html>
